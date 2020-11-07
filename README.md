@@ -10,9 +10,4 @@ Small blog application created following the [Flask Mega-Tutorial](https://blog.
 - Install the needed modules with `pip3 install -r requirements.txt`
 - Do `export FLASK_APP=microblog.py`
 - Launch the server using `flask run`
-
-## Database migration
-
-To update the database:
-- `flask db migrate`
 - `flask db upgrade`
