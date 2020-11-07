@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <h1>Microblog</h1>
+     <form action="" method="post">
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.post, placeholder='Get creative...', style='resize: none;', rows='3') }}
+        {{ wtf.form_field(form.submit) }}
+    </form>
+    {% if request.path == url_for('explore') %}
+    <h2><a href="{{ url_for('index') }}">Users&nbsp;you&nbsp;follow</a> / All&nbsp;posts</h2>
+    {% else %}
+    <h2>Users&nbsp;you&nbsp;follow / <a href="{{ url_for('explore') }}">All&nbsp;posts</a></h2>
+    {% endif %}
+
+    {% for post in posts %}
+        {% include "_post.html" %}
+    {% endfor %}
+
+    {% include "_pagination_links.html" %}
+
+{% endblock %}

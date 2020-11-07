@@ -1,0 +1,98 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}
+    {% if title %}
+        {{ title }} ·
+    {% endif %}
+    Microblog
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {{ moment.include_moment() }}
+{% endblock scripts %}
+
+{% block styles %}
+    <link rel="stylesheet" href="https://bootswatch.com/3/readable/bootstrap.min.css">
+    <style >
+        body {
+            padding-top: 90px;
+        }
+    </style>
+{% endblock styles %}
+
+{% set navigation_bar = [
+    (url_for('login'), 'anonymous', 'Login', False),
+    (url_for('register'), 'anonymous', 'Register', False),
+    (url_for('index'), 'login', 'Home', True),
+    (url_for('explore'), 'login', 'Explore', True),
+    (url_for('user', username=current_user.username), 'login', 'Profile', False),
+    (url_for('logout'), 'login', 'Logout', False),
+] %}
+
+{% set user_connected = current_user.is_authenticated %}
+
+{% block navbar %}
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav-collapse" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{ url_for('index') }}">Microblog</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="nav-collapse">
+                <ul class="nav navbar-nav">
+                    {% for route, status, name, left in navigation_bar %}
+                    {% if ((user_connected and status == 'login')
+                            or (not user_connected and status == 'anonymous')
+                            or status == 'both') and left %}
+                        <li {% if request.path == route %}
+                                class='active'
+                            {% endif %}>
+                            <a href="{{ route }}">{{ name }}</a>
+                        </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    {% for route, status, name, left in navigation_bar %}
+                    {% if ((user_connected and status == 'login')
+                            or (not user_connected and status == 'anonymous')
+                            or status == 'both') and not left %}
+                        <li {% if request.path == route %}
+                                class='active'
+                            {% endif %}>
+                            <a href="{{ route }}">{{ name }}</a>
+                        </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{% if category == 'error' %}danger{% else %}success{% endif %}" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    {{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+                {% block app_content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+
+    <div class="media">
+        <div class="media-body">
+            <h1 class="media-heading">{{ user.username }}</h1>
+            <p style='margin-top: 15px;'>
+                {{ user.followers.count() }}
+                {% if user.followers.count() > 1 %}
+                    followers,
+                {% else %}
+                    follower,
+                {% endif %}
+                {{ user.followed.count() }} following
+                {% if user == current_user  %}
+                    &mdash; <a href="{{ url_for('edit_profile') }}">Edit your profile</a>
+                {% endif %}
+            </p>
+            <p>
+                {% if user.about_me %}{{ user.about_me }}{% endif %}
+            </p>
+            <p>
+                {% if user.last_seen %}<small>Last seen {{ moment(user.last_seen).fromNow() }}</small>{% endif %}
+            </p>
+        </div>
+        <div class="media-right media-middle">
+            {% if user == current_user %}
+                <a target="_BLANK" href="//gravatar.com">
+            {% endif %}
+                <img style="width: 96px;" src="{{ user.avatar(128) }}" alt="Avatar of user {{ user.username }}">
+            {% if user == current_user %}
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if user != current_user  %}
+    <p>
+    <form action="{{ url_for('toggle_follow', username=user.username) }}" method="post">
+        {{ form.hidden_tag() }}
+        {% if current_user.is_following(user) %}
+        {{ form.submit(value='Unfollow') }}
+        {% else %}
+        {{ form.submit(value='Follow') }}
+        {% endif %}
+    </form>
+    </p>
+    {% endif %}
+
+    <h2>Posts</h2>
+
+    {% for post in posts %}
+        {% include '_post.html' %}
+    {% endfor %}
+
+    {% include "_pagination_links.html" %}
+
+{% endblock %}

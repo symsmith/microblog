@@ -1,0 +1,34 @@
+<nav aria-label="Page navigation">
+    <ul class="pager">
+        <li class="previous
+            {% if not prev_url %}
+                disabled
+            {% endif %}">
+            {% if prev_url %}
+            <a href="{{ prev_url }}" aria-label="Previous">
+            {% endif %}
+                <span>
+                    <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
+                    <span aria-hidden="true">Newer</span>
+                </span>
+            {% if prev_url %}
+            </a>
+            {% endif %}
+        </li>
+        <li class="next
+            {% if not next_url %}
+                disabled
+            {% endif %}">
+            {% if next_url %}
+            <a href="{{ next_url }}" aria-label="Next">
+            {% endif %}
+                <span>
+                    <span aria-hidden="true">Older</span>
+                    <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span>
+                </span>
+            {% if next_url %}
+            </a>
+            {% endif %}
+        </li>
+    </ul>
+</nav>

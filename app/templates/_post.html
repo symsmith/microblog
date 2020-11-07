@@ -1,0 +1,15 @@
+<div class="media">
+    <div class="media-left media-middle">
+        <a href="{{ url_for('user', username=post.author.username) }}">
+            <img style="width: 64px;" src="{{ post.author.avatar(128) }}" />
+        </a>
+    </div>
+    <div class="media-body">
+        <h4 class="media-heading">
+            <a style='font-size: 18px;' href="{{ url_for('user', username=post.author.username) }}">
+                {{ post.author.username }}</a><small style='font-size: 67%;'>,
+                {{ moment(post.timestamp).fromNow() }}</small>
+        </h4>
+        {{ post.body }}
+    </div>
+</div>
