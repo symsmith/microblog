@@ -7,6 +7,7 @@ Small blog application created following the [Flask Mega-Tutorial](https://blog.
 - [SQLAlchemy](https://www.sqlalchemy.org/)
 - [ElasticSearch](https://www.elastic.co/elasticsearch/)
 - [Moment.js](https://momentjs.com/)
+- [Gravatar](https://gravatar.com)
 
 ## Installation
 
