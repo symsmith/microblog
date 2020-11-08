@@ -7,10 +7,11 @@ from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
-from flask_bootstrap import Bootstrap
-from flask_moment import Moment
 import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
+from flask_bootstrap import Bootstrap
+from flask_moment import Moment
+from elasticsearch import Elasticsearch
 import os
 
 app = Flask(__name__)
@@ -27,6 +28,9 @@ login.login_view = 'login'
 bootstrap = Bootstrap(app)
 
 moment = Moment(app)
+
+app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
+    if app.config['ELASTICSEARCH_URL'] else None
 
 if not app.debug:
     if app.config['MAIL_SERVER']:

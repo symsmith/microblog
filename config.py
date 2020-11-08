@@ -25,3 +25,4 @@ class Config():
     POSTS_PER_PAGE = 10
     # available: mp, identicon, monsterid, wavatar, retro, robohash, blank
     AVATAR_STYLE = 'retro'
+    ELASTICSEARCH_URL = os.environ.get('ELASTICSEARCH_URL')

@@ -2,11 +2,10 @@
 Routes for the app
 """
 
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, g
 from flask_login import current_user, login_user, logout_user, login_required
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, EditProfileForm, EmptyForm,\
-    PostForm, ResetPasswordRequestForm, ResetPasswordForm
+from app.forms import *
 from app.models import User, Post
 from app.email import send_password_reset_email
 from werkzeug.urls import url_parse
@@ -83,8 +82,8 @@ def login():
     if form.validate_on_submit():
         user_to_log = User.query.filter_by(username=form.username.data).first()
 
-        if (user_to_log is None
-                or not user_to_log.check_password(form.password.data)):
+        if (user_to_log is None or
+                not user_to_log.check_password(form.password.data)):
             flash('Invalid username or password', 'error')
             return redirect(url_for('login'))
 
@@ -202,6 +201,34 @@ def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
+        g.search_form = SearchForm()
+
+
+@app.route('/search')
+@login_required
+def search():
+    """
+    Search results page
+    """
+    if not g.search_form.validate():
+        return redirect(url_for('explore'))
+    query = g.search_form.q.data
+    page = request.args.get('page', 1, type=int)
+    if page <= 0:
+        return redirect(url_for('index'))
+    posts, total = Post.search(query,
+                               page,
+                               app.config['POSTS_PER_PAGE'])
+    next_url = url_for('search', q=query, page=page + 1) \
+        if total > page * app.config['POSTS_PER_PAGE'] else None
+    prev_url = url_for('search', q=query, page=page - 1) \
+        if page > 1 else None
+    return render_template('search.html',
+                           title=query,
+                           total=total,
+                           posts=posts,
+                           next_url=next_url,
+                           prev_url=prev_url)
 
 
 @app.route('/edit', methods=['POST', 'GET'])

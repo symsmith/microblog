@@ -8,6 +8,6 @@ Small blog application created following the [Flask Mega-Tutorial](https://blog.
 - Create the `venv` folder with `virtualenv venv`
 - Source the venv with `source venv/bin/activate`
 - Install the needed modules with `pip3 install -r requirements.txt`
-- Do `export FLASK_APP=microblog.py`
+- Do `export FLASK_APP=microblog.py` and `export ELASTICSEARCH_URL=http://localhost:9200`
 - Launch the server using `flask run`
 - `flask db upgrade`
