@@ -2,6 +2,14 @@
 
 Small blog application created following the [Flask Mega-Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world) by [Miguel Grinberg](https://github.com/miguelgrinberg)
 
+## Features
+- Account creation/login
+- Password reset with email sent
+- Post creation
+- Search through the posts
+- User profile and follow
+- Pagination
+
 ## Built with
 - [Flask](https://flask.palletsprojects.com/en/1.1.x/)
 - [SQLAlchemy](https://www.sqlalchemy.org/)
