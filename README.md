@@ -2,6 +2,12 @@
 
 Small blog application created following the [Flask Mega-Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world) by [Miguel Grinberg](https://github.com/miguelgrinberg)
 
+## Built with
+- [Flask](https://flask.palletsprojects.com/en/1.1.x/)
+- [SQLAlchemy](https://www.sqlalchemy.org/)
+- [ElasticSearch](https://www.elastic.co/elasticsearch/)
+- [Moment.js](https://momentjs.com/)
+
 ## Installation
 
 - Clone the repository then `cd` into it.
