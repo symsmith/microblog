@@ -14,10 +14,13 @@
     <h2>Users&nbsp;you&nbsp;follow / <a href="{{ url_for('explore') }}">All&nbsp;posts</a></h2>
     {% endif %}
 
-    {% for post in posts %}
-        {% include "_post.html" %}
-    {% endfor %}
-
-    {% include "_pagination_links.html" %}
+    {% if posts|length > 0 %}
+        {% for post in posts %}
+            {% include "_post.html" %}
+        {% endfor %}
+        {% include "_pagination_links.html" %}
+    {% else %}
+        <br><h4>No post yet, time to post one!</h4>
+    {% endif %}
 
 {% endblock %}

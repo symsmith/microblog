@@ -6,7 +6,7 @@ from flask import render_template, flash, redirect, url_for, request, g
 from flask_login import current_user, login_user, logout_user, login_required
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, EmptyForm,\
-    PostForm, ResetPasswordRequestForm, ResetPasswordForm
+    PostForm, ResetPasswordRequestForm, ResetPasswordForm, SearchForm
 from app.models import User, Post
 from app.email import send_password_reset_email
 from werkzeug.urls import url_parse
@@ -28,7 +28,7 @@ def index():
         flash('Posted!')
         return redirect(url_for('index', page=page))
     posts = current_user.followed_posts().paginate(
-        page, app.config['POSTS_PER_PAGE'], True)
+        page, app.config['POSTS_PER_PAGE'], False)
     next_url = url_for('index', page=posts.next_num) \
         if posts.has_next else None
     prev_url = url_for('index',
@@ -56,7 +56,7 @@ def explore():
         flash('Posted!')
         return redirect(url_for('explore', page=page))
     posts = Post.query.order_by(Post.timestamp.desc()).paginate(
-        page, app.config['POSTS_PER_PAGE'], True)
+        page, app.config['POSTS_PER_PAGE'], False)
     next_url = url_for('explore', page=posts.next_num) \
         if posts.has_next else None
     prev_url = url_for('explore',
@@ -83,8 +83,8 @@ def login():
     if form.validate_on_submit():
         user_to_log = User.query.filter_by(username=form.username.data).first()
 
-        if (user_to_log is None or
-                not user_to_log.check_password(form.password.data)):
+        if (user_to_log is None
+                or not user_to_log.check_password(form.password.data)):
             flash('Invalid username or password', 'error')
             return redirect(url_for('login'))
 
