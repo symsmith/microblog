@@ -8,6 +8,7 @@ Small blog application created following the [Flask Mega-Tutorial](https://blog.
 - [ElasticSearch](https://www.elastic.co/elasticsearch/)
 - [Moment.js](https://momentjs.com/)
 - [Gravatar](https://gravatar.com)
+- [Bootstrap 3](https://getbootstrap.com/docs/3.4/)
 
 ## Installation
 
