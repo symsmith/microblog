@@ -5,7 +5,8 @@ Routes for the app
 from flask import render_template, flash, redirect, url_for, request, g
 from flask_login import current_user, login_user, logout_user, login_required
 from app import app, db
-from app.forms import *
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, EmptyForm,\
+    PostForm, ResetPasswordRequestForm, ResetPasswordForm
 from app.models import User, Post
 from app.email import send_password_reset_email
 from werkzeug.urls import url_parse
