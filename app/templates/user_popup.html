@@ -19,10 +19,10 @@
         <p style='margin-top: 5px;'>
             {{ user.followers.count() }}
             {% if user.followers.count() > 1 %}
-                followers,
+                followers
             {% else %}
-                follower,
-            {% endif %}
+                follower
+            {% endif %}<br>
             {{ user.followed.count() }} following
         </p>
         <p>
