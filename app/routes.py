@@ -19,10 +19,11 @@ def index():
     """
     Main page
     """
-    form = PostForm()
+    post_form = PostForm()
+    delete_form = EmptyForm()
     page = request.args.get('page', 1, type=int)
-    if form.validate_on_submit():
-        post = Post(body=form.post.data, author=current_user)
+    if post_form.validate_on_submit():
+        post = Post(body=post_form.post.data, author=current_user)
         db.session.add(post)
         db.session.commit()
         flash('Posted!')
@@ -35,10 +36,11 @@ def index():
                        page=posts.prev_num if posts.prev_num > 1 else None) \
         if posts.has_prev else None
     return render_template('index.html',
-                           form=form,
+                           form=post_form,
                            posts=posts.items,
                            next_url=next_url,
-                           prev_url=prev_url,)
+                           prev_url=prev_url,
+                           delete_form=delete_form)
 
 
 @app.route('/explore', methods=['GET', 'POST'])
@@ -48,6 +50,7 @@ def explore():
     Explore all posts
     """
     form = PostForm()
+    delete_form = EmptyForm()
     page = request.args.get('page', 1, type=int)
     if form.validate_on_submit():
         post = Post(body=form.post.data, author=current_user)
@@ -67,7 +70,24 @@ def explore():
                            form=form,
                            posts=posts.items,
                            next_url=next_url,
-                           prev_url=prev_url)
+                           prev_url=prev_url,
+                           delete_form=delete_form)
+
+
+@app.route('/delete/<post_id>', methods=['POST', 'GET'])
+@login_required
+def delete_post(post_id):
+    """
+    Delete post
+    """
+    form = EmptyForm()
+    if form.validate_on_submit():
+        post = Post.query.filter_by(id=post_id).first_or_404()
+        if post.author == current_user:
+            db.session.delete(post)
+            db.session.commit()
+            flash('Post deleted')
+    return redirect(redirect_url())
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -173,6 +193,7 @@ def user(username):
     """
     User profile page
     """
+    delete_form = EmptyForm()
     profile_user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get('page', 1, type=int)
     posts = profile_user.posts.order_by(Post.timestamp.desc()).paginate(
@@ -191,7 +212,8 @@ def user(username):
                            posts=posts.items,
                            form=EmptyForm(),
                            next_url=next_url,
-                           prev_url=prev_url)
+                           prev_url=prev_url,
+                           delete_form=delete_form)
 
 
 @app.route('/user/<username>/popup')
@@ -200,9 +222,9 @@ def user_popup(username):
     """
     Profile page popup
     """
-    user = User.query.filter_by(username=username).first_or_404()
+    target_user = User.query.filter_by(username=username).first_or_404()
     form = EmptyForm()
-    return render_template('user_popup.html', user=user, form=form)
+    return render_template('user_popup.html', user=target_user, form=form)
 
 
 @app.before_request
@@ -308,3 +330,10 @@ def internal_error(error):
     """
     db.session.rollback()
     return render_template('500.html', title='Internal error'), 500
+
+
+def redirect_url(default='index'):
+    """
+    Returns the previous url visited
+    """
+    return request.args.get('next') or request.referrer or url_for(default)
