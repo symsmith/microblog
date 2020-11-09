@@ -83,8 +83,8 @@ def login():
     if form.validate_on_submit():
         user_to_log = User.query.filter_by(username=form.username.data).first()
 
-        if (user_to_log is None
-                or not user_to_log.check_password(form.password.data)):
+        if (user_to_log is None or
+                not user_to_log.check_password(form.password.data)):
             flash('Invalid username or password', 'error')
             return redirect(url_for('login'))
 
@@ -192,6 +192,17 @@ def user(username):
                            form=EmptyForm(),
                            next_url=next_url,
                            prev_url=prev_url)
+
+
+@app.route('/user/<username>/popup')
+@login_required
+def user_popup(username):
+    """
+    Profile page popup
+    """
+    user = User.query.filter_by(username=username).first_or_404()
+    form = EmptyForm()
+    return render_template('user_popup.html', user=user, form=form)
 
 
 @app.before_request
