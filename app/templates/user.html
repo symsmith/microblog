@@ -48,6 +48,7 @@
     </p>
     {% endif %}
     <br>
+    {% set no_popover = True %}
     {% for post in posts %}
         {% include '_post.html' %}
     {% endfor %}
