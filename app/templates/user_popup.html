@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <div class="media" style='font-size: 90%;'>
+        <div class="media-left">
+            <a href="{{ url_for('user', username=user.username) }}">
+                <img style="width: 96px;" src="{{ user.avatar(128) }}" alt="Avatar of user {{ user.username }}">
+            </a>
+        </div>
+        <div class="media-body">
+            <h3 class="media-heading pull-left"><a href="{{ url_for('user', username=user.username) }}">{{ user.username }}</a></h3>
+            {% if user != current_user  %}
+            <div class="pull-left" style='margin-left: 12px;'>
+                <form action="{{ url_for('toggle_follow', username=user.username) }}" method="post">
+                {{ form.hidden_tag() }}
+                {% if current_user.is_following(user) %}
+                {{ form.submit(value='Unfollow') }}
+                {% else %}
+                {{ form.submit(value='Follow') }}
+                {% endif %}
+                </form>
+            </div>
+            {% endif %}
+            <br><br>
+            <p>
+                {{ user.followers.count() }}
+                {% if user.followers.count() > 1 %}
+                    followers,
+                {% else %}
+                    follower,
+                {% endif %}
+                {{ user.followed.count() }} following
+            </p>
+            <p>
+                {% if user.about_me %}{{ user.about_me }}{% endif %}
+            </p>
+
+        </div>
+    </div>
+
+{% endblock %}
