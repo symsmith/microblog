@@ -11,6 +11,7 @@ Hosted by [Heroku](https://heroku.com) at [microblog.sym.codes](http://microblog
 - Search through the posts
 - User profile and follow
 - Pagination
+- User profiles pop out of links
 
 ## Built with
 - [Flask](https://flask.palletsprojects.com/en/1.1.x/)
