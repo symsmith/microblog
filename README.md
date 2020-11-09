@@ -1,6 +1,8 @@
 # Microblog
 
-Small blog application created following the [Flask Mega-Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world) by [Miguel Grinberg](https://github.com/miguelgrinberg)
+Small blog application created following the [Flask Mega-Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world) by [Miguel Grinberg](https://github.com/miguelgrinberg).
+
+Hosted by [Heroku](https://heroku.com) at [microblog.sym.codes](http://microblog.sym.codes).
 
 ## Features
 - Account creation/login
