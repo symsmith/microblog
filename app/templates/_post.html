@@ -6,8 +6,14 @@
     </div>
     <div class="media-body">
         <h4 class="media-heading">
+            <span
+            {% if no_popover %}
+            {% else %}
+            class="user_popup"
+            {% endif %}>
             <a style='font-size: 18px;' href="{{ url_for('user', username=post.author.username) }}">
-                {{ post.author.username }}</a><small style='font-size: 67%;'>,
+                {{ post.author.username }}</a>
+                </span><small style='font-size: 67%;'>·
                 {{ moment(post.timestamp).fromNow() }}</small>
         </h4>
         {{ post.body }}

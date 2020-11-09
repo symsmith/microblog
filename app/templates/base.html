@@ -10,6 +10,51 @@
 {% block scripts %}
     {{ super() }}
     {{ moment.include_moment() }}
+    <script>
+        $(function() {
+            let timer = null;
+            let xhr = null;
+            $('.user_popup').hover(
+                function(event) {
+                    // mouse in event handler
+                    let elem = $(event.currentTarget);
+                    timer = setTimeout(function() {
+                        timer = null;
+                        xhr = $.ajax(
+                            '/user/' + elem.first().text().trim() + '/popup').done(
+                            function(data) {
+                                xhr = null;
+                                elem.popover({
+                                    trigger: 'manual',
+                                    html: true,
+                                    animation: true,
+                                    placement: 'auto',
+                                    container: elem,
+                                    content: data
+                                }).popover('show');
+                                flask_moment_render_all();
+                            }
+                        );
+                    }, 700);
+                },
+                function(event) {
+                    // mouse out event handler
+                    let elem = $(event.currentTarget);
+                    if (timer) {
+                        clearTimeout(timer);
+                        timer = null;
+                    }
+                    else if (xhr) {
+                        xhr.abort();
+                        xhr = null;
+                    }
+                    else {
+                        elem.popover('destroy');
+                    }
+                }
+            )
+        });
+    </script>
 {% endblock scripts %}
 
 {% block styles %}

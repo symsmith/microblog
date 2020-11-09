@@ -40,14 +40,15 @@
     <form action="{{ url_for('toggle_follow', username=user.username) }}" method="post">
         {{ form.hidden_tag() }}
         {% if current_user.is_following(user) %}
-        {{ form.submit(value='Unfollow') }}
+        {{ form.submit(class='btn btn-default', value='Unfollow') }}
         {% else %}
-        {{ form.submit(value='Follow') }}
+        {{ form.submit(class='btn btn-default', value='Follow') }}
         {% endif %}
     </form>
     </p>
     {% endif %}
     <br>
+    {% set no_popover = True %}
     {% for post in posts %}
         {% include '_post.html' %}
     {% endfor %}
