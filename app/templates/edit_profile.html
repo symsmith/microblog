@@ -11,8 +11,30 @@
             <p><strong>Profile picture</strong></p>
             <p>Upload a picture on <a target="_BLANK" href="//gravatar.com">Gravatar</a> with the same email to use it on Microblog.</p>
         </div>
-        <div class="form-group">
-            {{ wtf.form_field(form.submit) }} <a href="{{ url_for('user', username=current_user.username) }}" class="btn btn-default">Cancel</a>
+        <div class="form-group pull-left">
+            {{ wtf.form_field(form.submit) }}
+            <a href="{{ url_for('user', username=current_user.username) }}" class="btn btn-default">Cancel</a>
+        </div>
+            <span class="btn btn-danger pull-right" data-toggle='modal' data-target='#deleteModal'>Delete account</span>
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Are you sure?</h4>
+                    </div>
+                    <div class="modal-body">
+                        All of your posts will be deleted. There is no way to retrieve a deleted account.
+                    </div>
+                    <div class="modal-footer">
+                        <form action="" method="post">
+                            {{ delete_form.hidden_tag() }}
+                            <button type="button" class="btn btn-default" data-dismiss="modal">No, cancel</button>
+                            {{ delete_form.submit(value='Yes, I want to delete my account', class='btn btn-danger') }}
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </form>
 {% endblock %}
