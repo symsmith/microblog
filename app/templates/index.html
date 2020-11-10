@@ -7,7 +7,7 @@
     {% else %}
     <h1>Microblog</h1>
     {% endif %}
-     <form action="" method="post">
+    <form action="" method="post">
         {{ form.hidden_tag() }}
         {{ wtf.form_field(form.post, placeholder='Get creative...', style='resize: none;', rows='3') }}
         {{ wtf.form_field(form.submit) }}
