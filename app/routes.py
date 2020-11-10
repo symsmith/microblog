@@ -107,8 +107,8 @@ def login():
     if form.validate_on_submit():
         user_to_log = User.query.filter_by(username=form.username.data).first()
 
-        if (user_to_log is None or
-                not user_to_log.check_password(form.password.data)):
+        if (user_to_log is None
+                or not user_to_log.check_password(form.password.data)):
             flash('Invalid username or password', 'error')
             return redirect(url_for('login'))
 
@@ -248,33 +248,6 @@ def before_request():
         g.search_form = SearchForm()
 
 
-@app.route('/search')
-@login_required
-def search():
-    """
-    Search results page
-    """
-    if not g.search_form.validate():
-        return redirect(url_for('explore'))
-    query = g.search_form.q.data
-    page = request.args.get('page', 1, type=int)
-    if page <= 0:
-        return redirect(url_for('index'))
-    posts, total = Post.search(query,
-                               page,
-                               app.config['POSTS_PER_PAGE'])
-    next_url = url_for('search', q=query, page=page + 1) \
-        if total > page * app.config['POSTS_PER_PAGE'] else None
-    prev_url = url_for('search', q=query, page=page - 1) \
-        if page > 1 else None
-    return render_template('search.html',
-                           title=query,
-                           total=total,
-                           posts=posts,
-                           next_url=next_url,
-                           prev_url=prev_url)
-
-
 @app.route('/edit', methods=['POST', 'GET'])
 @login_required
 def edit_profile():
@@ -323,6 +296,33 @@ def toggle_follow(username):
         db.session.commit()
         return redirect(url_for('user', username=username))
     return redirect(url_for('index'))
+
+
+@app.route('/search')
+@login_required
+def search():
+    """
+    Search results page
+    """
+    if not g.search_form.validate():
+        return redirect(url_for('explore'))
+    query = g.search_form.q.data
+    page = request.args.get('page', 1, type=int)
+    if page <= 0:
+        return redirect(url_for('index'))
+    posts, total = Post.search(query,
+                               page,
+                               app.config['POSTS_PER_PAGE'])
+    next_url = url_for('search', q=query, page=page + 1) \
+        if total > page * app.config['POSTS_PER_PAGE'] else None
+    prev_url = url_for('search', q=query, page=page - 1) \
+        if page > 1 else None
+    return render_template('search.html',
+                           title=query,
+                           total=total,
+                           posts=posts,
+                           next_url=next_url,
+                           prev_url=prev_url)
 
 
 @app.errorhandler(404)
