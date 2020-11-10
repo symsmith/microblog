@@ -233,6 +233,15 @@ def edit_profile():
     Profile edition page
     """
     form = EditProfileForm(current_user.username)
+    delete_form = EmptyForm()
+    if delete_form.validate_on_submit():
+        user = User.query.filter_by(username=current_user.username).first()
+        for post in user.posts:
+            db.session.delete(post)
+        db.session.delete(user)
+        db.session.commit()
+        flash('Your account was deleted')
+        return redirect(url_for('login'))
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.about_me = form.about_me.data
@@ -244,7 +253,8 @@ def edit_profile():
         form.about_me.data = current_user.about_me
     return render_template('edit_profile.html',
                            title='Edit profile',
-                           form=form)
+                           form=form,
+                           delete_form=delete_form)
 
 
 @app.route('/user/<username>/popup')
