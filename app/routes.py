@@ -13,7 +13,7 @@ from werkzeug.urls import url_parse
 from datetime import datetime
 
 
-def post(form, route='index'):
+def post(form):
     """
     Creates a post using the submitted form
     """
@@ -304,7 +304,7 @@ def toggle_follow(username):
             flash(f'You followed {username}!')
 
         db.session.commit()
-        return redirect(url_for('user', username=username))
+        return redirect(redirect_url())
     return redirect(url_for('index'))
 
 
