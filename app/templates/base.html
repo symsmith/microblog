@@ -63,6 +63,13 @@
         body {
             padding-top: 90px;
         }
+        .delete-button {
+            opacity: 0;
+            transition: opacity .1s;
+        }
+        .post:hover .delete-button {
+            opacity: 1;
+        }
     </style>
 {% endblock styles %}
 

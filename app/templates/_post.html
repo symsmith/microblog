@@ -1,4 +1,4 @@
-<div class="media">
+<div class="media post">
     <div class="media-left media-middle">
         <a href="{{ url_for('user', username=post.author.username) }}">
             <img style="width: 64px;" src="{{ post.author.avatar(128) }}" />
@@ -18,7 +18,7 @@
         </h4>
         <p>{{ post.body }}</p>
         {% if current_user == post.author %}
-        <button class="btn btn-danger btn-xs" data-toggle='modal' data-target='#deleteModal{{ post.id }}'>Delete</button>
+        <button class="btn btn-danger btn-xs delete-button" data-toggle='modal' data-target='#deleteModal{{ post.id }}'>Delete</button>
         <div class="modal fade" id="deleteModal{{ post.id }}" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
