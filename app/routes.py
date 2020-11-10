@@ -107,8 +107,8 @@ def login():
     if form.validate_on_submit():
         user_to_log = User.query.filter_by(username=form.username.data).first()
 
-        if (user_to_log is None
-                or not user_to_log.check_password(form.password.data)):
+        if (user_to_log is None or
+                not user_to_log.check_password(form.password.data)):
             flash('Invalid username or password', 'error')
             return redirect(url_for('login'))
 
@@ -226,6 +226,27 @@ def user(username):
                            prev_url=prev_url)
 
 
+@app.route('/edit', methods=['POST', 'GET'])
+@login_required
+def edit_profile():
+    """
+    Profile edition page
+    """
+    form = EditProfileForm(current_user.username)
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.about_me = form.about_me.data
+        db.session.commit()
+        flash('Your changes have been saved')
+        return redirect(url_for('user', username=current_user.username))
+    if request.method == 'GET':
+        form.username.data = current_user.username
+        form.about_me.data = current_user.about_me
+    return render_template('edit_profile.html',
+                           title='Edit profile',
+                           form=form)
+
+
 @app.route('/user/<username>/popup')
 @login_required
 def user_popup(username):
@@ -246,27 +267,6 @@ def before_request():
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
         g.search_form = SearchForm()
-
-
-@app.route('/edit', methods=['POST', 'GET'])
-@login_required
-def edit_profile():
-    """
-    Profile edition page
-    """
-    form = EditProfileForm(current_user.username)
-    if form.validate_on_submit():
-        current_user.username = form.username.data
-        current_user.about_me = form.about_me.data
-        db.session.commit()
-        flash('Your changes have been saved')
-        return redirect(url_for('user', username=current_user.username))
-    if request.method == 'GET':
-        form.username.data = current_user.username
-        form.about_me.data = current_user.about_me
-    return render_template('edit_profile.html',
-                           title='Edit profile',
-                           form=form)
 
 
 @app.route('/toggle-follow/<username>', methods=['POST', 'GET'])
