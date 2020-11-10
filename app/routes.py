@@ -13,6 +13,16 @@ from werkzeug.urls import url_parse
 from datetime import datetime
 
 
+def post(form, route='index'):
+    """
+    Creates a post using the submitted form
+    """
+    created_post = Post(body=form.post.data, author=current_user)
+    db.session.add(created_post)
+    db.session.commit()
+    flash('Posted!')
+
+
 @app.route('/', methods=['POST', 'GET'])
 @login_required
 def index():
@@ -23,11 +33,8 @@ def index():
     delete_form = EmptyForm()
     page = request.args.get('page', 1, type=int)
     if post_form.validate_on_submit():
-        post = Post(body=post_form.post.data, author=current_user)
-        db.session.add(post)
-        db.session.commit()
-        flash('Posted!')
-        return redirect(url_for('index', page=page))
+        post(post_form)
+        return redirect(redirect_url())
     posts = current_user.followed_posts().paginate(
         page, app.config['POSTS_PER_PAGE'], False)
     next_url = url_for('index', page=posts.next_num) \
@@ -49,15 +56,12 @@ def explore():
     """
     Explore all posts
     """
-    form = PostForm()
+    post_form = PostForm()
     delete_form = EmptyForm()
     page = request.args.get('page', 1, type=int)
-    if form.validate_on_submit():
-        post = Post(body=form.post.data, author=current_user)
-        db.session.add(post)
-        db.session.commit()
-        flash('Posted!')
-        return redirect(url_for('explore', page=page))
+    if post_form.validate_on_submit():
+        post(post_form)
+        return redirect(redirect_url())
     posts = Post.query.order_by(Post.timestamp.desc()).paginate(
         page, app.config['POSTS_PER_PAGE'], False)
     next_url = url_for('explore', page=posts.next_num) \
@@ -67,7 +71,7 @@ def explore():
         if posts.has_prev else None
     return render_template('index.html',
                            title='All posts',
-                           form=form,
+                           form=post_form,
                            posts=posts.items,
                            next_url=next_url,
                            prev_url=prev_url,
@@ -82,9 +86,9 @@ def delete_post(post_id):
     """
     form = EmptyForm()
     if form.validate_on_submit():
-        post = Post.query.filter_by(id=post_id).first_or_404()
-        if post.author == current_user:
-            db.session.delete(post)
+        target_post = Post.query.filter_by(id=post_id).first_or_404()
+        if target_post.author == current_user:
+            db.session.delete(target_post)
             db.session.commit()
             flash('Post deleted')
     return redirect(redirect_url())
@@ -187,15 +191,20 @@ def reset_password(token):
     return render_template('reset_password.html', form=form)
 
 
-@app.route('/user/<username>')
+@app.route('/user/<username>', methods=['POST', 'GET'])
 @login_required
 def user(username):
     """
     User profile page
     """
+    post_form = PostForm()
     delete_form = EmptyForm()
+    follow_form = EmptyForm()
     profile_user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get('page', 1, type=int)
+    if post_form.validate_on_submit():
+        post(post_form)
+        return redirect(redirect_url())
     posts = profile_user.posts.order_by(Post.timestamp.desc()).paginate(
         page, app.config['POSTS_PER_PAGE'], False)
     next_url = url_for('user',
@@ -210,10 +219,11 @@ def user(username):
                            title=profile_user.username,
                            user=profile_user,
                            posts=posts.items,
-                           form=EmptyForm(),
+                           follow_form=follow_form,
+                           delete_form=delete_form,
+                           post_form=post_form,
                            next_url=next_url,
-                           prev_url=prev_url,
-                           delete_form=delete_form)
+                           prev_url=prev_url)
 
 
 @app.route('/user/<username>/popup')
