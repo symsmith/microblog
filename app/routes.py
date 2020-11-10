@@ -107,8 +107,8 @@ def login():
     if form.validate_on_submit():
         user_to_log = User.query.filter_by(username=form.username.data).first()
 
-        if (user_to_log is None or
-                not user_to_log.check_password(form.password.data)):
+        if (user_to_log is None
+                or not user_to_log.check_password(form.password.data)):
             flash('Invalid username or password', 'error')
             return redirect(url_for('login'))
 
@@ -234,14 +234,6 @@ def edit_profile():
     """
     form = EditProfileForm(current_user.username)
     delete_form = EmptyForm()
-    if delete_form.validate_on_submit():
-        user = User.query.filter_by(username=current_user.username).first()
-        for post in user.posts:
-            db.session.delete(post)
-        db.session.delete(user)
-        db.session.commit()
-        flash('Your account was deleted')
-        return redirect(url_for('login'))
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.about_me = form.about_me.data
@@ -255,6 +247,24 @@ def edit_profile():
                            title='Edit profile',
                            form=form,
                            delete_form=delete_form)
+
+
+@app.route('/delete-account', methods=['GET', 'POST'])
+@login_required
+def delete_account():
+    """
+    Delete account processing
+    """
+    delete_form = EmptyForm()
+    if delete_form.validate_on_submit():
+        user = User.query.filter_by(username=current_user.username).first()
+        for post in user.posts:
+            db.session.delete(post)
+        db.session.delete(user)
+        db.session.commit()
+        flash('Your account was deleted')
+        return redirect(url_for('login'))
+    return redirect(redirect_url())
 
 
 @app.route('/user/<username>/popup')
